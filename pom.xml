@@ -129,6 +129,16 @@
                         </configuration>
                     </execution>
                     <execution>
+                        <id>tag-latest</id>
+                        <phase>none</phase>
+                        <goals>
+                            <goal>tag</goal>
+                        </goals>
+                        <configuration>
+                            <tag>latest</tag>
+                        </configuration>
+                    </execution>
+                    <execution>
                         <id>push-latest</id>
                         <phase>none</phase>
                         <goals>
