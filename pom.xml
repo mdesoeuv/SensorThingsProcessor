@@ -106,7 +106,7 @@
                 </executions>
             </plugin>
             <plugin>
-                <groupId>com.spotify</groupId>
+                <groupId>io.fabric8</groupId>
                 <artifactId>dockerfile-maven-plugin</artifactId>
                 <version>${dockerfile-maven-plugin.version}</version>
                 <executions>
@@ -159,10 +159,12 @@
                     </execution>
                 </executions>
                 <configuration>
-                    <repository>${docker-image-name}</repository>
-                    <buildArgs>
-                        <JAR_FILE>${project.build.finalName}-jar-with-dependencies.jar</JAR_FILE>
-                    </buildArgs>
+                    <repository>${docker-image-name}:${project.version}</repository>
+                    <args>
+                        <arg>
+                            <value>JAR_FILE=${project.build.finalName}-jar-with-dependencies.jar</value>
+                        </arg>
+                    </args>
                     <images>
                         <image>
                             <name>${docker-image-name}</name>
