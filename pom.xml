@@ -156,7 +156,7 @@
                     </buildArgs>
                     <images>
                         <image>
-                            <name>${docker-image-name}:${project.version}</name>
+                            <name>${docker-image-name}</name>
                             <build>
                                 <buildx>
                                     <platforms>
