@@ -84,6 +84,7 @@
     <build>
         <plugins>
             <plugin>
+                <groupId>io.fabric8</groupId>
                 <artifactId>maven-assembly-plugin</artifactId>
                 <configuration>
                     <archive>
