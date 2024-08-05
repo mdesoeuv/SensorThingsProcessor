@@ -13,9 +13,10 @@
     <inceptionYear>2017</inceptionYear>
 
     <properties>
+        <docker.platforms>linux/amd64,linux/arm64</docker.platforms>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <mainClass>de.fraunhofer.iosb.ilt.stp.MainApp</mainClass>
-        <docker-image-name>fraunhoferiosb/frost-processor</docker-image-name>
+        <docker-image-name>${image-name}</docker-image-name>
         <maven.compiler.target>17</maven.compiler.target>
         <maven.compiler.source>17</maven.compiler.source>
 
@@ -153,6 +154,18 @@
                     <buildArgs>
                         <JAR_FILE>${project.build.finalName}-jar-with-dependencies.jar</JAR_FILE>
                     </buildArgs>
+                    <images>
+                        <image>
+                            <name>${docker-image-name}:${project.version}</name>
+                            <build>
+                                <buildx>
+                                    <platforms>
+                                        <platform>${docker.platforms}</platform>
+                                    </platforms>
+                                </buildx>
+                            </build>
+                        </image>
+                    </images>
                 </configuration>
                 <dependencies>
                     <!-- Java 9 support -->
