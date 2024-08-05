@@ -13,7 +13,6 @@
     <inceptionYear>2017</inceptionYear>
 
     <properties>
-        <docker.platforms>linux/amd64,linux/arm64</docker.platforms>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <mainClass>de.fraunhofer.iosb.ilt.stp.MainApp</mainClass>
         <docker-image-name>${image-name}</docker-image-name>
@@ -167,10 +166,12 @@
                     <images>
                         <image>
                             <name>${docker-image-name}</name>
+                            <dockerFile>${project.basedir}/Dockerfile</dockerFile>
                             <build>
                                 <buildx>
                                     <platforms>
-                                        <platform>${docker.platforms}</platform>
+                                        <platform>linux/amd64</platform>
+                                        <platform>linux/arm64</platform>
                                     </platforms>
                                 </buildx>
                             </build>

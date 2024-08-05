@@ -38,6 +38,7 @@ jobs:
       run: |
         mvn -B dockerfile:build
         mvn -B dockerfile:tag@tag-version -Dimage-name=${{ vars.image_name }}
+        mvn -B dockerfile:tag@tag-latest -Dimage-name=${{ vars.image_name }}
         mvn -B dockerfile:push@push-latest -Ddockerfile.useMavenSettingsForAuth=true --settings maven-ci-settings.xml
         mvn -B dockerfile:push@push-version -Ddockerfile.useMavenSettingsForAuth=true --settings maven-ci-settings.xml
 
