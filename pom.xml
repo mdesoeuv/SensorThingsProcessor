@@ -281,5 +281,11 @@
             <artifactId>javafx-controls</artifactId>
             <version>${openjfx.version}</version>
         </dependency>
+        <dependency>
+            <groupId>io.fabric8</groupId>
+            <artifactId>docker-maven-plugin</artifactId>
+            <version>0.45.0</version>
+        </dependency>
+
     </dependencies>
 </project>
