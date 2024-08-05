@@ -20,7 +20,7 @@
         <maven.compiler.source>17</maven.compiler.source>
 
         <!-- maven plugin versions -->
-        <dockerfile-maven-plugin.version>1.4.13</dockerfile-maven-plugin.version>
+        <dockerfile-maven-plugin.version>0.45.0</dockerfile-maven-plugin.version>
         <git-commit-id-plugin.version>7.0.0</git-commit-id-plugin.version>
         <javax-activation.version>1.1.1</javax-activation.version>
 
