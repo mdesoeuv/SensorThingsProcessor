@@ -4,7 +4,8 @@ WORKDIR /usr/local/FROST
 COPY . .
 RUN mvn -B package
 
-FROM openjdk:17
+# openjdk:17 was withdrawn from Docker Hub; Temurin is the maintained JRE image.
+FROM eclipse-temurin:17-jre
 ARG JAR_FILE
 ARG VERSION
 WORKDIR /usr/local/FROST
