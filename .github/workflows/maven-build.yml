@@ -9,11 +9,11 @@ on:
   workflow_dispatch:
 
 jobs:
-
   build:
-    env:
-      VERSION: 0.12-SNAPSHOT
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
     steps:
     - name: Checkout Source
       uses: actions/checkout@v4
@@ -25,32 +25,44 @@ jobs:
         java-version: 17
 
     - name: Cache maven repository
-      uses: actions/cache@v3
+      uses: actions/cache@v4
       with:
         path: ~/.m2/repository
         key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
         restore-keys: ${{ runner.os }}-maven
 
+    - name: Read project version from pom.xml
+      id: version
+      run: |
+        version="$(mvn -B -q help:evaluate -Dexpression=project.version -DforceStdout)"
+        test -n "$version"
+        echo "version=$version" >> "$GITHUB_OUTPUT"
+
     - name: Set up QEMU
       uses: docker/setup-qemu-action@v3
-    
+
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v3
-    
+
     - name: Login to GitHub Container Registry
       uses: docker/login-action@v3
       with:
         registry: ghcr.io
         username: ${{ github.actor }}
         password: ${{ secrets.GITHUB_TOKEN }}
-    
+
     - name: Build and push
       uses: docker/build-push-action@v6
       with:
+        # A path context (not the default git context) so the .git directory is
+        # part of the build: the Maven build needs it, see .dockerignore.
         context: ${{ github.workspace }}
         platforms: linux/arm64,linux/amd64
         build-args: |
           JAR_FILE=FROST-Processor.jar
-          VERSION=${{env.VERSION}}
         push: true
-        tags: ${{vars.IMAGE_NAME}}:latest, ${{vars.IMAGE_NAME}}:${{ env.VERSION }}
+        tags: |
+          ${{ vars.IMAGE_NAME }}:latest
+          ${{ vars.IMAGE_NAME }}:${{ steps.version.outputs.version }}
+        cache-from: type=gha
+        cache-to: type=gha,mode=max
