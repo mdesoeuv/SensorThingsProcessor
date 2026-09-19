@@ -27,3 +27,24 @@ The Processor takes the following command line options.
 ```
 
 Start the Processor with no options to open the configuration GUI.
+
+## Authenticating on the SensorThings service
+
+The `authMethod` of a service (`de.fraunhofer.iosb.ilt.stp.sta.Service`) is one of:
+
+- `AuthNone`: anonymous.
+- `AuthBasic`: HTTP basic auth (`username`, `password`, `ignoreSslErrors`), for a FROST-Server on its BasicAuthProvider.
+- `AuthPostCookie`: form login, cookie session.
+- `AuthOidcClientCredentials`: OpenID Connect service account (OAuth 2.0 client credentials grant), for a FROST-Server on its Keycloak auth provider. The access token is fetched from `tokenUrl` with `clientId` / `clientSecret`, cached and renewed 30 s before it expires, and sent as a bearer token on every HTTP request. The MQTT connection stays anonymous.
+
+```json
+"authMethod": {
+  "className": "de.fraunhofer.iosb.ilt.stp.sta.AuthOidcClientCredentials",
+  "classConfig": {
+    "tokenUrl": "https://keycloak.example.org/realms/frost/protocol/openid-connect/token",
+    "clientId": "frost-processor",
+    "clientSecret": "...",
+    "ignoreSslErrors": false
+  }
+}
+```

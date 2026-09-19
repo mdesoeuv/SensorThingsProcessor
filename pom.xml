@@ -4,7 +4,7 @@
 
     <groupId>de.fraunhofer.iosb.ilt</groupId>
     <artifactId>SensorThingsProcessor</artifactId>
-    <version>0.11-SNAPSHOT</version>
+    <version>0.12-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <name>SensorThings Processor</name>
@@ -15,14 +15,11 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <mainClass>de.fraunhofer.iosb.ilt.stp.MainApp</mainClass>
-        <docker-image-name>${env.IMAGE_NAME}</docker-image-name>
         <maven.compiler.target>17</maven.compiler.target>
         <maven.compiler.source>17</maven.compiler.source>
 
         <!-- maven plugin versions -->
-        <dockerfile-maven-plugin.version>1.4.13</dockerfile-maven-plugin.version>
         <git-commit-id-plugin.version>7.0.0</git-commit-id-plugin.version>
-        <javax-activation.version>1.1.1</javax-activation.version>
 
         <!-- Dependency versions -->
         <commons-io.version>2.15.1</commons-io.version>
@@ -104,64 +101,6 @@
                         </goals>
                     </execution>
                 </executions>
-            </plugin>
-            <plugin>
-                <groupId>com.spotify</groupId>
-                <artifactId>dockerfile-maven-plugin</artifactId>
-                <version>${dockerfile-maven-plugin.version}</version>
-                <executions>
-                    <execution>
-                        <id>build-and-tag-latest</id>
-                        <phase>none</phase>
-                        <goals>
-                            <goal>build</goal>
-                        </goals>
-                    </execution>
-                    <execution>
-                        <id>tag-version</id>
-                        <phase>none</phase>
-                        <goals>
-                            <goal>tag</goal>
-                        </goals>
-                        <configuration>
-                            <tag>${project.version}</tag>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>push-latest</id>
-                        <phase>none</phase>
-                        <goals>
-                            <goal>push</goal>
-                        </goals>
-                        <configuration>
-                            <tag>latest</tag>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>push-version</id>
-                        <phase>none</phase>
-                        <goals>
-                            <goal>push</goal>
-                        </goals>
-                        <configuration>
-                            <tag>${project.version}</tag>
-                        </configuration>
-                    </execution>
-                </executions>
-                <configuration>
-                    <repository>${docker-image-name}</repository>
-                    <buildArgs>
-                        <JAR_FILE>${project.build.finalName}-jar-with-dependencies.jar</JAR_FILE>
-                    </buildArgs>
-                </configuration>
-                <dependencies>
-                    <!-- Java 9 support -->
-                    <dependency>
-                        <groupId>javax.activation</groupId>
-                        <artifactId>activation</artifactId>
-                        <version>${javax-activation.version}</version>
-                    </dependency>
-                </dependencies>
             </plugin>
             <plugin>
 				<groupId>io.github.git-commit-id</groupId>

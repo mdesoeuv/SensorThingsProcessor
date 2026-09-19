@@ -1,0 +1,18 @@
+# Keeps the build context small. The .git directory is deliberately kept:
+# git-commit-id-maven-plugin needs it to write git.json, which the processor
+# reads at startup.
+target/
+.github/
+.vscode/
+.idea/
+*.iml
+nbactions.xml
+nb-configuration.xml
+docker-compose.yaml
+Dockerfile
+.dockerignore
+README.md
+LICENSE
+*.log
+*.pem
+*.pub

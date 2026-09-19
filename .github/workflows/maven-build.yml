@@ -11,6 +11,9 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
     steps:
     - name: Checkout Source
       uses: actions/checkout@v4
@@ -22,25 +25,44 @@ jobs:
         java-version: 17
 
     - name: Cache maven repository
-      uses: actions/cache@v3
+      uses: actions/cache@v4
       with:
         path: ~/.m2/repository
         key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
         restore-keys: ${{ runner.os }}-maven
 
-    - name: Build with Maven
-      run: mvn -B package
-
-    - name: Build & Push Docker
-      env:
-        DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
-        DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
-        GITHUB_USERNAME: ${{ secrets.TOKEN_USERNAME }}
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        IMAGE_NAME: ${{ vars.IMAGE_NAME }}
+    - name: Read project version from pom.xml
+      id: version
       run: |
-        mvn -B dockerfile:build
-        mvn -B dockerfile:tag@tag-version
-        mvn -B dockerfile:push@push-latest -Ddockerfile.useMavenSettingsForAuth=true --settings maven-ci-settings.xml
-        mvn -B dockerfile:push@push-version -Ddockerfile.useMavenSettingsForAuth=true --settings maven-ci-settings.xml
+        version="$(mvn -B -q help:evaluate -Dexpression=project.version -DforceStdout)"
+        test -n "$version"
+        echo "version=$version" >> "$GITHUB_OUTPUT"
 
+    - name: Set up QEMU
+      uses: docker/setup-qemu-action@v3
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v3
+
+    - name: Login to GitHub Container Registry
+      uses: docker/login-action@v3
+      with:
+        registry: ghcr.io
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Build and push
+      uses: docker/build-push-action@v6
+      with:
+        # A path context (not the default git context) so the .git directory is
+        # part of the build: the Maven build needs it, see .dockerignore.
+        context: ${{ github.workspace }}
+        platforms: linux/arm64,linux/amd64
+        build-args: |
+          JAR_FILE=FROST-Processor.jar
+        push: true
+        tags: |
+          ${{ vars.IMAGE_NAME }}:latest
+          ${{ vars.IMAGE_NAME }}:${{ steps.version.outputs.version }}
+        cache-from: type=gha
+        cache-to: type=gha,mode=max

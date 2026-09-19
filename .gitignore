@@ -30,3 +30,8 @@ nbactions.xml
 #idea files
 /.idea
 *.iml
+
+# SSH Keys
+*.pem
+*.pub
+
